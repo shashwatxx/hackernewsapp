@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', bloc: bloc),
+      home: MyHomePage(title: 'Flutter HackerNews App', bloc: bloc),
     );
   }
 }
@@ -48,10 +48,28 @@ class _MyHomePageState extends State<MyHomePage> {
       body: StreamBuilder<UnmodifiableListView<Article>>(
         stream: widget.bloc.articles,
         initialData: UnmodifiableListView<Article>([]),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return ListView(
-            children: snapshot.data.map(_buildItem).toList(),
-          );
+        builder: (context, snapshot) => ListView(
+          children: snapshot.data.map(_buildItem).toList(),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.arrow_upward_rounded),
+            label: "Top Stories",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.new_releases),
+            label: "New Stories",
+          ),
+        ],
+        onTap: (int index) {
+          if (index == 0) {
+            widget.bloc.storiesType.add(StoriesType.topStories);
+          } else {
+            widget.bloc.storiesType.add(StoriesType.newStories);
+          }
         },
       ),
     );
