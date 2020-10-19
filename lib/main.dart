@@ -70,10 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       (BuildContext context, AsyncSnapshot<Article> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return _buildItem(snapshot.data);
-                      // return Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: Text(snapshot.data.title),
-                      // );
                     } else {
                       return Center(child: CircularProgressIndicator());
                     }
