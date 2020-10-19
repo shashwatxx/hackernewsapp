@@ -22,7 +22,7 @@ void main() {
     final url = 'https://hacker-news.firebaseio.com/v0/beststories.json';
     final http.Response res = await http.get(url);
     if (res.statusCode == 200) {
-      final idList = jsonDecode(res.body);
+      final idList = parseTopStories(res.body);
       if (idList.isNotEmpty) {
         final storyUrl =
             'https://hacker-news.firebaseio.com/v0/item/${idList.first}.json';
