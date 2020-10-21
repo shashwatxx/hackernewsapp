@@ -33,13 +33,17 @@ class HackerNewsBloc {
     24808071,
     24793170,
     24813795,
-    24814687,
+    24791357,
+    24790055,
   ];
+
+  Stream<bool> get isLoading => _isLoadingSubject.stream;
+  final _isLoadingSubject = BehaviorSubject<bool>();
 
   HackerNewsBloc() {
     _getArticleAndUpdate(_topIds);
     _storiesTypeController.stream.listen((storiesType) {
-      List<int> ids;
+      // List<int> ids;
       if (storiesType == StoriesType.newStories) {
         _getArticleAndUpdate(_newIds);
       } else {
@@ -48,14 +52,16 @@ class HackerNewsBloc {
     });
   }
 
-  _getArticleAndUpdate(List<int> ids) {
-    _updateArticles(ids).then((value) {
-      _articlesSubject.add(UnmodifiableListView(_articles));
-    });
+  _getArticleAndUpdate(List<int> ids) async {
+    _isLoadingSubject.add(true);
+    await _updateArticles(ids);
+    _articlesSubject.add(UnmodifiableListView(_articles));
+    _isLoadingSubject.add(false);
   }
 
   Stream<UnmodifiableListView<Article>> get articles => _articlesSubject.stream;
 
+  // ignore: missing_return
   Future<Article> _getArticle(int id) async {
     final storyUrl = 'https://hacker-news.firebaseio.com/v0/item/$id.json';
     final storyRes = await http.get(storyUrl);
