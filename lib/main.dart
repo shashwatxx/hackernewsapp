@@ -38,12 +38,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // List<Article> _articles = []; //articles;
-
+  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: LoadingInfo(widget.bloc.isLoading),
       ),
       body: StreamBuilder<UnmodifiableListView<Article>>(
         stream: widget.bloc.articles,
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.arrow_upward_rounded),
@@ -70,6 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
           } else {
             widget.bloc.storiesType.add(StoriesType.newStories);
           }
+          setState(() {
+            _currentIndex = index;
+          });
         },
       ),
     );
@@ -100,6 +104,26 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class LoadingInfo extends StatelessWidget {
+  LoadingInfo(this._isLoading);
+  Stream<bool> _isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _isLoading,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data) {
+          return CircularProgressIndicator(
+            backgroundColor: Colors.white,
+          );
+        }
+        return Container();
+      },
     );
   }
 }
