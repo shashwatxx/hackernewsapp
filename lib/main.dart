@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hackernewsapp/src/article.dart';
 import 'package:hackernewsapp/src/hn_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -108,20 +109,44 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class LoadingInfo extends StatelessWidget {
+class LoadingInfo extends StatefulWidget {
   LoadingInfo(this._isLoading);
   Stream<bool> _isLoading;
 
   @override
+  _LoadingInfoState createState() => _LoadingInfoState();
+}
+
+class _LoadingInfoState extends State<LoadingInfo>
+    with TickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(
+        seconds: 1,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _isLoading,
+      stream: widget._isLoading,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.hasData && snapshot.data) {
-          return CircularProgressIndicator(
-            backgroundColor: Colors.white,
+          _controller.forward();
+          return FadeTransition(
+            opacity: _controller,
+            child: Icon(
+              FontAwesomeIcons.hackerNewsSquare,
+            ),
           );
         }
+        _controller.reverse();
         return Container();
       },
     );
