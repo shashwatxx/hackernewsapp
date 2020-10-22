@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter HackerNews App', bloc: bloc),
@@ -137,17 +137,25 @@ class _LoadingInfoState extends State<LoadingInfo>
     return StreamBuilder(
       stream: widget._isLoading,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData && snapshot.data) {
-          _controller.forward();
-          return FadeTransition(
-            opacity: _controller,
-            child: Icon(
-              FontAwesomeIcons.hackerNewsSquare,
+        // if (snapshot.hasData && snapshot.data) {
+        _controller.forward().then((_) => _controller.reverse());
+        return FadeTransition(
+          opacity: Tween(
+            begin: 0.5,
+            end: 1.0,
+          ).animate(
+            CurvedAnimation(
+              curve: Curves.easeIn,
+              parent: _controller,
             ),
-          );
-        }
-        _controller.reverse();
-        return Container();
+          ),
+          child: Icon(
+            FontAwesomeIcons.hackerNewsSquare,
+          ),
+        );
+        // }
+
+        // return Container();
       },
     );
   }
